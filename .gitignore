@@ -1,0 +1,5 @@
+.make/
+*.csv
+*.txt
+
+btc
