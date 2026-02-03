@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/01/30 15:47:44 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/03 10:48:29 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ static std::map<std::string, double>::iterator prev(std::map<std::string, double
 	return (i);
 }
 
-static void ThrowError(int nb_line, std::string err_msg, std::string file_name)
+static std::logic_error BuildError(int nb_line, std::string err_msg, std::string file_name)
 {
 	std::stringstream ss;
 	
 	ss << file_name << ":" << nb_line << ": " << "\033[31m" << "error: " << "\033[0m" << err_msg;
-	throw std::logic_error(ss.str());
+	return (std::logic_error(ss.str()));
 }
 
 /* -------------------------------------- */
@@ -69,17 +69,17 @@ static std::string parse_date(std::string line, int nb_line, std::string file_na
 	char *end = strptime(line.c_str(), "%Y-%m-%d", &t);
 
 	if (!end)
-		ThrowError(nb_line, "Date is poorly formatted: " + line, file_name);
+		throw BuildError(nb_line, "Date is poorly formatted: " + line, file_name);
 	if (t.tm_mday > 30 && is_in<int>(t.tm_mon + 1, littlesmonths, 4))
-		ThrowError(nb_line, "This month has only 30 days: " + line, file_name);
+		throw BuildError(nb_line, "This month has only 30 days: " + line, file_name);
 	if (t.tm_mon == 1)
 	{
 		if (t.tm_mday > 28 && !isALeapYear(t.tm_year + 1900))
-			ThrowError(nb_line, "This month has only 28 days (this is'nt a leap year): " + line, file_name);
+			throw BuildError(nb_line, "This month has only 28 days (this is'nt a leap year): " + line, file_name);
 		if (t.tm_mday > 29 && isALeapYear(t.tm_year + 1900))
-			ThrowError(nb_line, "This month has only 28 days (this is'nt a leap year): " + line, file_name);
+			throw BuildError(nb_line, "This month has only 28 days (this is'nt a leap year): " + line, file_name);
 	}
-	for (int i = 0; line[i] != *end; i++)
+	for (size_t i = 0; line[i] != *end; i++)
 	{
 		if (line[i + 1] == *end)
 			line.resize(i + 1);
@@ -91,21 +91,21 @@ static double parse_nb(std::string line, int nb_line, std::string file_name)
 {
 	std::stringstream ss(line);
 	double nb;
-	int i = line.find_first_not_of("0123456789");
+	size_t i = line.find_first_not_of("0123456789");
 	
 	if (i != std::string::npos)
 	{
 		std::string line_cpy(line.substr(i + 1));
-		if (line[i] != '.' && !(line[i] == '-' && i == 0) || line_cpy.find_first_not_of("0123456789") != std::string::npos)
-			ThrowError(nb_line, "Not a number: " + line, file_name);
+		if ((line[i] != '.' && !(line[i] == '-' && i == 0)) || line_cpy.find_first_not_of("0123456789") != std::string::npos)
+			throw BuildError(nb_line, "Not a number: " + line, file_name);
 	}
 	ss >> nb;
 	if (ss.fail())
-		ThrowError(nb_line, "Don't fit in a double: " + line, file_name);
+		throw BuildError(nb_line, "Don't fit in a double: " + line, file_name);
 	if (nb > std::numeric_limits<int>::max())
-		ThrowError(nb_line, "Number is too big: " + line, file_name);
+		throw BuildError(nb_line, "Number is too big: " + line, file_name);
 	if (nb < 0)
-		ThrowError(nb_line, "Not a positive number: " + line, file_name);
+		throw BuildError(nb_line, "Not a positive number: " + line, file_name);
 	return (nb);
 }
 
@@ -113,10 +113,10 @@ static std::pair<std::string, double> parse_line(std::string line, int nb_line, 
 {
 	std::string date = parse_date(line, nb_line, file_name);
 	
-	for (int i = 0; i < sep.size(); i++)
+	for (size_t i = 0; i < sep.size(); i++)
 	{
 		if (line[date.size() + i] != sep[i])
-			ThrowError(nb_line, "Invalid separator: " + line, file_name);
+			throw BuildError(nb_line, "Invalid separator: " + line, file_name);
 	}
 	std::pair<std::string, double> p(date, parse_nb(line.substr(date.size() + sep.size()), nb_line, file_name));
 	return (p);
@@ -131,7 +131,7 @@ static void parse_csv(std::map<std::string, double> &m)
 		throw std::logic_error("Failed to open: " + std::string(DATAFILE));
 	std::getline(file, line);
 	if (line != "date,exchange_rate")
-			ThrowError(1, "line is poorly formatted: " + line, DATAFILE);
+			throw BuildError(1, "line is poorly formatted: " + line, DATAFILE);
 	for (int i = 2; std::getline(file, line); i++)
 		m.insert(parse_line(line, i, ",", DATAFILE));
 }
@@ -146,21 +146,21 @@ static void parse_and_convert_to_btc(std::map<std::string, double> &data_m, std:
 		throw std::logic_error("Failed to open: " + std::string(file_to_parse));
 	std::getline(file, line);
 	if (line != "date | value")
-		ThrowError(1, "line is poorly formatted: " + line, file_to_parse);
+		throw BuildError(1, "line is poorly formatted: " + line, file_to_parse);
 	for (int i = 2; std::getline(file, line); i++)
 	{
 		try {
 			p = parse_line(line, i, " | ", file_to_parse);
-			for (std::map<std::string, double>::iterator i = data_m.begin(); i != data_m.end(); i++)
+			for (std::map<std::string, double>::iterator it = data_m.begin(); it != data_m.end(); it++)
 			{
-				if (p.first == (*i).first)
+				if (p.first == (*it).first)
 				{
-					std::cout << p.first << " => " << p.second << " = " << p.second * (*i).second << std::endl;
+					std::cout << p.first << " => " << p.second << " = " << p.second * (*it).second << std::endl;
 					break;
 				}
-				if (p.first < (*i).first)
+				if (p.first < (*it).first)
 				{
-					std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(i)).second << std::endl;
+					std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(it)).second << std::endl;
 					break;
 				}
 			}
