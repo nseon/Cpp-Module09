@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 17:19:16 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/16 16:22:07 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/16 18:02:55 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ T generate_jacobsthal(size_t n)
 /* ----------------VECTOR----------------- */
 /* --------------------------------------- */
 
-void pairs_and_winners(std::vector<int> &container, std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain)
+static void pairs_and_winners(std::vector<int> &container, std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain)
 {
 	for (size_t i = 0; i < container.size(); i += 2)
 	{
@@ -55,7 +55,7 @@ void pairs_and_winners(std::vector<int> &container, std::vector<std::pair<int, i
 	}
 }
 
-void loosers(std::vector<std::pair<int, int> > &pairs,std::vector<int> &mainChain, std::vector<int> &pendChain)
+static void loosers(std::vector<std::pair<int, int> > &pairs,std::vector<int> &mainChain, std::vector<int> &pendChain)
 {
 	std::vector<bool> used(pairs.size(), false);
 	
@@ -73,7 +73,7 @@ void loosers(std::vector<std::pair<int, int> > &pairs,std::vector<int> &mainChai
 	}
 }
 
-void insert_elem(size_t insertedCount, size_t sequenceIndex, std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain, std::vector<int> &pendChain)
+static void insert_elem(size_t insertedCount, size_t sequenceIndex, std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain, std::vector<int> &pendChain)
 {
 	for (size_t j = sequenceIndex; j >= insertedCount; j--)
 	{
@@ -94,7 +94,7 @@ void insert_elem(size_t insertedCount, size_t sequenceIndex, std::vector<std::pa
 	}
 }
 
-void insert_pending_elems(std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain, std::vector<int> &pendChain)
+static void insert_pending_elems(std::vector<std::pair<int, int> > &pairs, std::vector<int> &mainChain, std::vector<int> &pendChain)
 {
 	mainChain.insert(mainChain.begin(), pendChain[0]);
 	
@@ -144,7 +144,7 @@ void PmergeMe::sort_vec(std::vector<int> &container)
 /* --------------------------------------- */
 
 
-void pairs_and_winners(std::deque<int> &container, std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain)
+static void pairs_and_winners(std::deque<int> &container, std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain)
 {
 	for (size_t i = 0; i < container.size(); i += 2)
 	{
@@ -158,7 +158,7 @@ void pairs_and_winners(std::deque<int> &container, std::deque<std::pair<int, int
 	}
 }
 
-void loosers(std::deque<std::pair<int, int> > &pairs,std::deque<int> &mainChain, std::deque<int> &pendChain)
+static void loosers(std::deque<std::pair<int, int> > &pairs,std::deque<int> &mainChain, std::deque<int> &pendChain)
 {
 	std::deque<bool> used(pairs.size(), false);
 	
@@ -176,7 +176,7 @@ void loosers(std::deque<std::pair<int, int> > &pairs,std::deque<int> &mainChain,
 	}
 }
 
-void insert_elem(size_t insertedCount, size_t sequenceIndex, std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain, std::deque<int> &pendChain)
+static void insert_elem(size_t insertedCount, size_t sequenceIndex, std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain, std::deque<int> &pendChain)
 {
 	for (size_t j = sequenceIndex; j >= insertedCount; j--)
 	{
@@ -197,7 +197,7 @@ void insert_elem(size_t insertedCount, size_t sequenceIndex, std::deque<std::pai
 	}
 }
 
-void insert_pending_elems(std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain, std::deque<int> &pendChain)
+static void insert_pending_elems(std::deque<std::pair<int, int> > &pairs, std::deque<int> &mainChain, std::deque<int> &pendChain)
 {
 	mainChain.insert(mainChain.begin(), pendChain[0]);
 	
