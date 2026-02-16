@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 17:19:16 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/12 17:27:18 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/16 13:27:18 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 #include <algorithm>
 
 #include "PmergeMe.hpp"
+
+/* --------------------------------------- */
+/* -----------------UTILS----------------- */
+/* --------------------------------------- */
 
 template <typename T>
 T generate_jacobsthal(size_t n)
@@ -32,6 +36,10 @@ T generate_jacobsthal(size_t n)
 	}
 	return (sequence);
 }
+
+/* --------------------------------------- */
+/* ----------------VECTOR----------------- */
+/* --------------------------------------- */
 
 void PmergeMe::sort_vec(std::vector<int> &container)
 {
@@ -59,13 +67,17 @@ void PmergeMe::sort_vec(std::vector<int> &container)
 	}
 	sort_vec(mainChain);
 	
+	std::vector<bool> used(pairs.size(), false);
 	std::vector<int> pendChain;
 	for (size_t i = 0; i < mainChain.size(); i++)
 	{
 		for (size_t j = 0; j < pairs.size(); j++)
 		{
-			if (pairs[j].first == mainChain[i])
+			if (!used[j] && pairs[j].first == mainChain[i])
+			{
 				pendChain.push_back(pairs[j].second);
+				used[j] = true;
+			}
 		}
 	}
 	mainChain.insert(mainChain.begin(), pendChain[0]);
@@ -106,6 +118,10 @@ void PmergeMe::sort_vec(std::vector<int> &container)
 	container = mainChain;
 }
 
+/* --------------------------------------- */
+/* -----------------DEQUE----------------- */
+/* --------------------------------------- */
+
 void PmergeMe::sort_deq(std::deque<int> container)
 {
 	if (container.size() <= 1)
@@ -132,13 +148,17 @@ void PmergeMe::sort_deq(std::deque<int> container)
 	}
 	sort_deq(mainChain);
 	
+	std::vector<bool> used(pairs.size(), false);
 	std::deque<int> pendChain;
 	for (size_t i = 0; i < mainChain.size(); i++)
 	{
 		for (size_t j = 0; j < pairs.size(); j++)
 		{
-			if (pairs[j].first == mainChain[i])
+			if (!used[j] && pairs[j].first == mainChain[i])
+			{
 				pendChain.push_back(pairs[j].second);
+				used[j] = true;
+			}
 		}
 	}
 	mainChain.insert(mainChain.begin(), pendChain[0]);
@@ -150,7 +170,7 @@ void PmergeMe::sort_deq(std::deque<int> container)
 	{
 		size_t sequenceIndex = static_cast<size_t>(jacobsthal_sequence[i]);
 		if (sequenceIndex >= pendChain.size())
-        	sequenceIndex = pendChain.size() - 1;
+			sequenceIndex = pendChain.size() - 1;
 		for (size_t j = sequenceIndex; j >= insertedCount; j--)
 		{
 			int valueToInsert = pendChain[j];
