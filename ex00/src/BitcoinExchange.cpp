@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/03 10:48:29 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/18 17:18:32 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,10 @@ static void parse_and_convert_to_btc(std::map<std::string, double> &data_m, std:
 				}
 				if (p.first < (*it).first)
 				{
-					std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(it)).second << std::endl;
+					if (it == data_m.begin())
+						throw BuildError(i, "Date doesn't match any data: " + parse_date(line, i, file_to_parse), file_to_parse);
+					else
+						std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(it)).second << std::endl;
 					break;
 				}
 			}
