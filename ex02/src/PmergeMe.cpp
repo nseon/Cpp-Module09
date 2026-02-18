@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 17:19:16 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/16 18:02:55 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/18 15:02:30 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ static void insert_pending_elems(std::deque<std::pair<int, int> > &pairs, std::d
 	}
 }
 
-void PmergeMe::sort_deq(std::deque<int> container)
+void PmergeMe::sort_deq(std::deque<int> &container)
 {
 	if (container.size() <= 1)
 		return ;

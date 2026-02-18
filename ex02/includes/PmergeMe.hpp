@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 17:19:04 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/12 13:47:49 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/18 15:02:40 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class PmergeMe {
 		~PmergeMe();
 	public:
 		static void sort_vec(std::vector<int> &container);
-		static void sort_deq(std::deque<int> container);
+		static void sort_deq(std::deque<int> &container);
 };
 
 #include "../src/PmergeMe.cpp"
