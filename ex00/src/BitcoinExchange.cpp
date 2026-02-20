@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/20 11:14:40 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 11:16:15 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static float parse_nb(std::string line, int nb_line, std::string file_name)
 	ss >> nb;
 	if (ss.fail())
 		throw BuildError(nb_line, "Don't fit in a float: " + line, file_name);
-	if (nb > std::numeric_limits<int>::max())
+	if (nb > 1000)
 		throw BuildError(nb_line, "Number is too big: " + line, file_name);
 	if (nb < 0)
 		throw BuildError(nb_line, "Not a positive number: " + line, file_name);
