@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/20 12:57:47 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 18:02:50 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,24 @@ static std::logic_error BuildError(int nb_line, std::string err_msg, std::string
 	
 	ss << file_name << ":" << nb_line << ": " << "\033[31m" << "error: " << "\033[0m" << err_msg;
 	return (std::logic_error(ss.str()));
+}
+
+static bool less_than_date(std::string date1, std::string date2)
+{
+	tm t1;
+	tm t2;
+
+	strptime(date1.c_str(), "%Y-%m-%d", &t1);
+	strptime(date2.c_str(), "%Y-%m-%d", &t2);
+	if (t1.tm_year >= t2.tm_year)
+	{
+		if (t1.tm_mon >= t2.tm_mon)
+		{
+			if (t1.tm_mday >= t2.tm_mday)
+				return (0);
+		}
+	}
+	return (1);
 }
 
 /* -------------------------------------- */
@@ -145,7 +163,7 @@ static void convert(std::pair<std::string, float> &p, std::map<std::string, floa
 			std::cout << p.first << " => " << p.second << " = " << p.second * (*it).second << std::endl;
 			break;
 		}
-		if (p.first < (*it).first)
+		if (less_than_date(p.first, (*it).first))
 		{
 			if (it == data_m.begin())
 				throw BuildError(i, "Date doesn't match any data: " + parse_date(line, i, file_to_parse), file_to_parse);
