@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 10:59:28 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/04 16:00:09 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 14:02:56 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int main (int argc, char **argv)
 				rpn.addNumber(argv[1][i] - 48);
 			else if (isOp(argv[1][i]))
 				rpn.makeOperation(argv[1][i]);
-			else
+			else if (argv[1][i] != ' ')
 				throw BuildError(std::string("Not allowed char: ") + argv[1][i]);
 		}
 		rpn.print();
