@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/20 11:18:15 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 11:26:03 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,26 @@ static void parse_csv(std::map<std::string, float> &m)
 		m.insert(parse_line(line, i, ",", DATAFILE));
 }
 
+static void convert(std::pair<std::string, float> &p, std::map<std::string, float> &data_m, std::string &line, int i, std::string &file_to_parse)
+{
+	for (std::map<std::string, float>::iterator it = data_m.begin(); it != data_m.end(); it++)
+	{
+		if (p.first == (*it).first)
+		{
+			std::cout << p.first << " => " << p.second << " = " << p.second * (*it).second << std::endl;
+			break;
+		}
+		if (p.first < (*it).first)
+		{
+			if (it == data_m.begin())
+				throw BuildError(i, "Date doesn't match any data: " + parse_date(line, i, file_to_parse), file_to_parse);
+			else
+				std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(it)).second << std::endl;
+			break;
+		}
+	}
+}
+
 static void parse_and_convert_to_btc(std::map<std::string, float> &data_m, std::string file_to_parse)
 {
 	std::ifstream file(file_to_parse.c_str());
@@ -151,22 +171,7 @@ static void parse_and_convert_to_btc(std::map<std::string, float> &data_m, std::
 	{
 		try {
 			p = parse_line(line, i, " | ", file_to_parse);
-			for (std::map<std::string, float>::iterator it = data_m.begin(); it != data_m.end(); it++)
-			{
-				if (p.first == (*it).first)
-				{
-					std::cout << p.first << " => " << p.second << " = " << p.second * (*it).second << std::endl;
-					break;
-				}
-				if (p.first < (*it).first)
-				{
-					if (it == data_m.begin())
-						throw BuildError(i, "Date doesn't match any data: " + parse_date(line, i, file_to_parse), file_to_parse);
-					else
-						std::cout << p.first << " => " << p.second << " = " << p.second * (*prev(it)).second << std::endl;
-					break;
-				}
-			}
+			convert(p, data_m, line, i, file_to_parse);
 		}
 		catch (std::exception &e) {
 			std::cerr << e.what() << std::endl;
