@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 16:52:53 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/18 17:18:32 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 11:14:40 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static bool isALeapYear(int year)
 	return ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0);
 }
 
-static std::map<std::string, double>::iterator prev(std::map<std::string, double>::iterator i)
+static std::map<std::string, float>::iterator prev(std::map<std::string, float>::iterator i)
 {
 	std::advance(i, -1);
 	return (i);
@@ -87,10 +87,10 @@ static std::string parse_date(std::string line, int nb_line, std::string file_na
 	return (line);
 }
 
-static double parse_nb(std::string line, int nb_line, std::string file_name)
+static float parse_nb(std::string line, int nb_line, std::string file_name)
 {
 	std::stringstream ss(line);
-	double nb;
+	float nb;
 	size_t i = line.find_first_not_of("0123456789");
 	
 	if (i != std::string::npos)
@@ -101,7 +101,7 @@ static double parse_nb(std::string line, int nb_line, std::string file_name)
 	}
 	ss >> nb;
 	if (ss.fail())
-		throw BuildError(nb_line, "Don't fit in a double: " + line, file_name);
+		throw BuildError(nb_line, "Don't fit in a float: " + line, file_name);
 	if (nb > std::numeric_limits<int>::max())
 		throw BuildError(nb_line, "Number is too big: " + line, file_name);
 	if (nb < 0)
@@ -109,7 +109,7 @@ static double parse_nb(std::string line, int nb_line, std::string file_name)
 	return (nb);
 }
 
-static std::pair<std::string, double> parse_line(std::string line, int nb_line, std::string sep, std::string file_name)
+static std::pair<std::string, float> parse_line(std::string line, int nb_line, std::string sep, std::string file_name)
 {
 	std::string date = parse_date(line, nb_line, file_name);
 	
@@ -118,11 +118,11 @@ static std::pair<std::string, double> parse_line(std::string line, int nb_line, 
 		if (line[date.size() + i] != sep[i])
 			throw BuildError(nb_line, "Invalid separator: " + line, file_name);
 	}
-	std::pair<std::string, double> p(date, parse_nb(line.substr(date.size() + sep.size()), nb_line, file_name));
+	std::pair<std::string, float> p(date, parse_nb(line.substr(date.size() + sep.size()), nb_line, file_name));
 	return (p);
 }
 
-static void parse_csv(std::map<std::string, double> &m)
+static void parse_csv(std::map<std::string, float> &m)
 {
 	std::ifstream file(DATAFILE);
 	std::string line;
@@ -136,11 +136,11 @@ static void parse_csv(std::map<std::string, double> &m)
 		m.insert(parse_line(line, i, ",", DATAFILE));
 }
 
-static void parse_and_convert_to_btc(std::map<std::string, double> &data_m, std::string file_to_parse)
+static void parse_and_convert_to_btc(std::map<std::string, float> &data_m, std::string file_to_parse)
 {
 	std::ifstream file(file_to_parse.c_str());
 	std::string line;
-	std::pair<std::string, double> p;
+	std::pair<std::string, float> p;
 	
 	if (!file.is_open())
 		throw std::logic_error("Failed to open: " + std::string(file_to_parse));
@@ -151,7 +151,7 @@ static void parse_and_convert_to_btc(std::map<std::string, double> &data_m, std:
 	{
 		try {
 			p = parse_line(line, i, " | ", file_to_parse);
-			for (std::map<std::string, double>::iterator it = data_m.begin(); it != data_m.end(); it++)
+			for (std::map<std::string, float>::iterator it = data_m.begin(); it != data_m.end(); it++)
 			{
 				if (p.first == (*it).first)
 				{
