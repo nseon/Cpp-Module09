@@ -6,7 +6,7 @@
 /*   By: nseon <nseon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 10:59:33 by nseon             #+#    #+#             */
-/*   Updated: 2026/02/04 15:58:19 by nseon            ###   ########.fr       */
+/*   Updated: 2026/02/20 14:44:36 by nseon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,10 @@ void RPN::makeOperation(char op)
 
 void RPN::print()
 {
-	std::cout << _stack.top() << std::endl;
+	if (_stack.size() == 1)
+		std::cout << _stack.top() << std::endl;
+	else if (_stack.size() > 1)
+		throw BuildError("More than 1 number in stack");
 }
 
 /* --------------------------------------- */
