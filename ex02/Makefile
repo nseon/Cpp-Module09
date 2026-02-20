@@ -6,7 +6,7 @@
 #    By: nseon <nseon@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/13 10:54:16 by nseon             #+#    #+#              #
-#    Updated: 2026/02/10 12:41:30 by nseon            ###   ########.fr        #
+#    Updated: 2026/02/20 18:25:57 by nseon            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -Weverything -Wno-suggest-override -W
 CPPFLAGS	:=	-MMD -MP $(addprefix -I, $(INCLUDES))
 
 
-MAKEFLAGS	+=	--no-print-directory
+MAKEFLAGS	+=	--no-print-directory --jobs
 
 # ---------------MODES--------------- #
 
